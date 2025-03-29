@@ -1,10 +1,15 @@
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 30vh;
+}
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
     line-height: 1.6;
     background: #fcfcfc;
     color: #2f2f2f;
-  }
+}
   
 header {
     position: sticky;
