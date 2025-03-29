@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Εθελοντικός Οργανισμός Νεολέας</title>
   <link rel="stylesheet" href="som.css">
+  <script src="scripts.js"></script>
 </head>
 <body>
 
@@ -45,7 +46,7 @@
       <input type="text" name="firstName" placeholder="*Όνομα" required pattern="^[Α-Ωα-ωΆ-Ώά-ώ\s\-]+$">
       <input type="text" name="lastName" placeholder="*Επώνυμο" required pattern="^[Α-Ωα-ωΆ-Ώά-ώ\s\-]+$">
 
-      <input list="locations" name="location" id="location" required placeholder="*Πληκτρολογήστε ή επιλέξτε περιοχή">
+      <input list="locations" name="location" id="location" required placeholder="*Πληκτρολογήστε ή επιλέξτε περιοχή" required pattern="^[Α-Ωα-ωΆ-Ώά-ώ\s\-]+$">
 
       <datalist id="locations">
       <option value="Αθήνα">
@@ -65,7 +66,7 @@
 
   <footer id="contact">
     <p>
-      Επικοινωνήστε μαζί μας: info@volunteer.gr | © 2025 Φιλανθρωπία Ελπίδας
+      Επικοινωνήστε μαζί μας: info@volunteer.gr | © 2025 Εθελοντικός Οργανισμός Νεολέας
     </p>
   </footer>
 </body>
