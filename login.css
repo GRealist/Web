@@ -1,0 +1,78 @@
+.back-home {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    z-index: 10;
+}
+  
+.back-home a {
+    display: inline-block;
+    background-color: #29557a;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 1em;
+    font-weight: 500;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+  
+.back-home a:hover {
+    background-color: #1d3557;
+    transform: translateY(-2px);
+}
+  
+.login-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)),
+                url('https://as1.ftcdn.net/v2/jpg/02/09/99/06/1000_F_209990637_CCqkxKxw0x3OrpmzAjqD4NET5zRPXoda.jpg') no-repeat center center;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    box-sizing: border-box;
+}
+  
+.login-container {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    text-align: center;
+    max-width: 360px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+  
+.login-form input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+    box-sizing: border-box;
+}
+  
+.login-form button {
+    background-color: #29557a;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    font-size: 1em;
+}
+  
+.login-form button:hover {
+    background-color: #1d3557;
+}
