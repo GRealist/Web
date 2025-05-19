@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Πίνακας Κατάταξης Εθελοντών</title>
+  <link rel="stylesheet" href="profile.css" />
+  <style>
+    body {
+      background-image: url('volunteers.jpg');
+      background-size: cover;
+      background-attachment: fixed;
+      background-position: center;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.2);
+      z-index: -1;
+    }
+
+    .leaderboard-container {
+      max-width: 800px;
+      margin: 60px auto;
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .leaderboard-container h2 {
+      text-align: center;
+      color: #1d3557;
+    }
+
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    .leaderboard-table th,
+    .leaderboard-table td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      margin-left: 8px;
+      border-radius: 6px;
+      font-size: 0.8em;
+      color: white;
+    }
+
+    .badge.gold { background-color: #ffd700; color: #000; }
+    .badge.silver { background-color: #c0c0c0; color: #000; }
+    .badge.bronze { background-color: #cd7f32; color: #000; }
+    .badge.streak { background-color: #4caf50; }
+    .badge.admin { background-color: #ff5722; }
+    .badge.mod { background-color: #2196f3; }
+  </style>
+</head>
+<body>
+  <header class="profile-header">
+    <h1>Πίνακας Κατάταξης</h1>
+    <nav id="main-nav">
+      <a href="main.html">Αρχική</a>
+      <a href="leaderboard.html">Κατάταξη</a>
+      <a href="contact.html">Επικοινωνία</a>
+      <a href="profile.html">Προφίλ</a>
+    </nav>
+  </header>
+
+  <main class="leaderboard-container">
+    <h2>Κορυφαίοι Εθελοντές</h2>
+    <table class="leaderboard-table" id="leaderboard">
+      <thead>
+        <tr>
+          <th>Όνομα Χρήστη</th>
+          <th>Δράσεις</th>
+          <th>Βραβεία</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Δυναμικά δεδομένα -->
+      </tbody>
+    </table>
+  </main>
+
+  <script>
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const events = JSON.parse(localStorage.getItem("events")) || [];
+    const today = new Date().toISOString().split("T")[0];
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+    // Dynamic navigation
+    const nav = document.getElementById("main-nav");
+    if (currentUser?.role === "admin") {
+      const adminLink = document.createElement("a");
+      adminLink.href = "admin.html";
+      adminLink.textContent = "Διαχειριστής";
+      nav.appendChild(adminLink);
+    }
+
+    if (currentUser) {
+      const logoutLink = document.createElement("a");
+      logoutLink.href = "#";
+      logoutLink.textContent = "Αποσύνδεση";
+      logoutLink.onclick = () => {
+        localStorage.removeItem("currentUser");
+        window.location.href = "main.html";
+      };
+      nav.appendChild(logoutLink);
+    } else {
+      const loginLink = document.createElement("a");
+      loginLink.href = "login.html";
+      loginLink.textContent = "Σύνδεση";
+      nav.appendChild(loginLink);
+    }
+
+    function syncUserActivities() {
+      let updated = false;
+      users.forEach((user, index) => {
+        user.activities = user.activities || [];
+        events.forEach(event => {
+          if (!event.attendees?.includes(user.username)) return;
+          if (event.date > today) return;
+
+          const label = `${event.title} (${event.date})`;
+          if (!user.activities.includes(label)) {
+            user.activities.push(label);
+            updated = true;
+          }
+        });
+        users[index] = user;
+      });
+
+      if (updated) {
+        localStorage.setItem("users", JSON.stringify(users));
+      }
+    }
+
+    function getBadges(user, index) {
+      const badges = [];
+      if (index === 0) badges.push('<span class="badge gold">🥇 1η Θέση</span>');
+      else if (index === 1) badges.push('<span class="badge silver">🥈 2η Θέση</span>');
+      else if (index === 2) badges.push('<span class="badge bronze">🥉 3η Θέση</span>');
+      if ((user.activities?.length || 0) >= 3) badges.push('<span class="badge streak">🔥 Συνεχής Συμμετοχή</span>');
+      if (user.role === "admin") badges.push('<span class="badge admin">🛡️ Διαχειριστής</span>');
+      if (user.role === "mod") badges.push('<span class="badge mod">🔧 Συντονιστής</span>');
+      return badges.join(" ");
+    }
+
+    function renderLeaderboard() {
+      syncUserActivities();
+
+      const tbody = document.querySelector("#leaderboard tbody");
+      tbody.innerHTML = "";
+      users.sort((a, b) => (b.activities?.length || 0) - (a.activities?.length || 0));
+
+      users.forEach((user, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${user.username}</td>
+          <td>${user.activities?.length || 0}</td>
+          <td>${getBadges(user, index)}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    renderLeaderboard();
+  </script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+header {
+  background: #1d3557;
+  color: white;
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+nav#main-nav, .profile-header nav {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+nav a:hover {
+  background-color: #457b9d;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('volunteers.jpg');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    color: #2f2f2f;
+  }
+  
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.9);
+    z-index: -1;
+  }
+  
+  header {
+    background: #1d3557;
+    color: white;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  
+  header h1 {
+    font-size: 1.5em;
+  }
+  
+  nav a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    transition: color 0.2s;
+  }
+  
+  nav a:hover {
+    color: #ffcc00;
+  }
+  
+  main {
+    padding: 40px;
+    max-width: 1000px;
+    margin: auto;
+  }
+  
+  section {
+    background: white;
+    padding: 30px;
+    margin-bottom: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  }
+  
+  section h2 {
+    margin-top: 0;
+    color: #1d3557;
+    border-bottom: 2px solid #457b9d;
+    padding-bottom: 5px;
+  }
+  
+  ul li {
+    margin: 12px 0;
+  }
+  
+  form.volunteer-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+  }
+  
+  form.volunteer-form input,
+  form.volunteer-form button {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1em;
+  }
+  
+  form.volunteer-form button {
+    background-color: #1d3557;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  form.volunteer-form button:hover {
+    background-color: #0f2a46;
+  }
+  
+  .event-attend-btn {
+    background-color: #1d3557;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .event-attend-btn:hover {
+    background-color: #0f2a46;
+  }
+  
+  .event-attend-btn.cancel {
+    background-color: #e63946;
+  }
+  
+  .event-attend-btn.cancel:hover {
+    background-color: #b02f38;
+  }
+  
+  footer {
+    text-align: center;
+    padding: 20px;
+    background: #1d3557;
+    color: white;
+    margin-top: 40px;
+    font-size: 0.9em;
+  }
+  
+  hr {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 20px 0;
+  }
+  
+  

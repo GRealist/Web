@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Επικοινωνία | Εθελοντικός Οργανισμός Νεολαίας</title>
+  <link rel="stylesheet" href="main.css" />
+  <style>
+    .contact-container {
+      max-width: 700px;
+      margin: 60px auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .contact-container h2 {
+      text-align: center;
+      color: #1d3557;
+      margin-bottom: 20px;
+    }
+
+    .contact-container label {
+      display: block;
+      margin: 12px 0 5px;
+    }
+
+    .contact-container input,
+    .contact-container textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-bottom: 15px;
+    }
+
+    .contact-container button {
+      background-color: #1d3557;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1em;
+      width: 100%;
+    }
+
+    .contact-container button:hover {
+      background-color: #16314d;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Εθελοντικός Οργανισμός Νεολαίας</h1>
+    <nav id="main-nav">
+      <a href="main.html">Αρχική</a>
+      <a href="leaderboard.html">Κατάταξη</a>
+      <a href="contact.html">Επικοινωνία</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="contact-container">
+      <h2>Επικοινωνήστε μαζί μας</h2>
+      <form id="contact-form">
+        <label for="name">Όνομα</label>
+        <input type="text" id="name" name="name" required />
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required />
+
+        <label for="subject">Θέμα</label>
+        <input type="text" id="subject" name="subject" required />
+
+        <label for="message">Μήνυμα</label>
+        <textarea id="message" name="message" rows="5" required></textarea>
+
+        <button type="submit">Αποστολή</button>
+      </form>
+      <p id="status-message" style="text-align: center; margin-top: 15px;"></p>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById("contact-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const subject = document.getElementById("subject").value;
+      const message = document.getElementById("message").value;
+
+      console.log("Sending email to organization...");
+      console.log({ name, email, subject, message });
+
+      document.getElementById("status-message").textContent = "Το μήνυμα εστάλη επιτυχώς! Θα επικοινωνήσουμε σύντομα.";
+      this.reset();
+    });
+
+    // === Navigation setup ===
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const nav = document.getElementById("main-nav");
+
+    if (currentUser) {
+      const profileLink = document.createElement("a");
+      profileLink.href = "profile.html";
+      profileLink.textContent = "Προφίλ";
+      nav.appendChild(profileLink);
+
+      if (currentUser.role === "admin") {
+        const adminLink = document.createElement("a");
+        adminLink.href = "admin.html";
+        adminLink.textContent = "Διαχειριστής";
+        nav.appendChild(adminLink);
+      }
+
+      const logoutLink = document.createElement("a");
+      logoutLink.href = "#";
+      logoutLink.textContent = "Αποσύνδεση";
+      logoutLink.onclick = () => {
+        localStorage.removeItem("currentUser");
+        window.location.href = "login.html";
+      };
+      nav.appendChild(logoutLink);
+    } else {
+      const loginLink = document.createElement("a");
+      loginLink.href = "login.html";
+      loginLink.textContent = "Σύνδεση";
+      nav.appendChild(loginLink);
+    }
+  </script>
+</body>
+</html>

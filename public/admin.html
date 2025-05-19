@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Διαχείριση Χρηστών</title>
+  <link rel="stylesheet" href="admin.css" />
+  <style>
+    .event-item ul {
+      padding-left: 20px;
+    }
+    .event-item button.remove-attendee {
+      margin-left: 10px;
+      color: red;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header class="profile-header">
+    <h1>Πίνακας Διαχείρισης</h1>
+    <nav id="main-nav">
+      <a href="main.html">Αρχική</a>
+      <a href="leaderboard.html">Κατάταξη</a>
+      <a href="contact.html">Επικοινωνία</a>
+      <a href="profile.html">Προφίλ</a>
+      <a href="admin.html">Διαχειριστής</a>
+    </nav>
+  </header>
+
+  <main class="admin-container">
+    <h2>Χρήστες</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Όνομα Χρήστη</th>
+          <th>Email</th>
+          <th>Τηλέφωνο</th>
+          <th>Ρόλος</th>
+          <th>Συμμετοχές</th>
+          <th>Ενέργεια</th>
+        </tr>
+      </thead>
+      <tbody id="user-table"></tbody>
+    </table>
+
+    <section class="event-section">
+      <h2>Διαχείριση Δραστηριοτήτων</h2>
+      <form class="event-form" onsubmit="addEvent(event)">
+        <input type="text" id="event-title" placeholder="Τίτλος" required />
+        <input type="date" id="event-date" required />
+        <input type="text" id="event-location" placeholder="Τοποθεσία" required />
+        <button type="submit">Προσθήκη</button>
+      </form>
+      <ul id="event-list"></ul>
+    </section>
+  </main>
+
+  <script>
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const nav = document.getElementById("main-nav");
+
+    if (!currentUser || currentUser.role !== "admin") {
+      alert("Πρόσβαση μόνο σε διαχειριστές.");
+      window.location.href = "main.html";
+    }
+
+    // Add logout to nav
+    const logoutLink = document.createElement("a");
+    logoutLink.href = "#";
+    logoutLink.textContent = "Αποσύνδεση";
+    logoutLink.onclick = () => {
+      localStorage.removeItem("currentUser");
+      window.location.href = "login.html";
+    };
+    nav.appendChild(logoutLink);
+
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+    let events = JSON.parse(localStorage.getItem("events")) || [];
+
+    const userTable = document.getElementById("user-table");
+    users.forEach((user, index) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${user.username}</td>
+        <td>${user.email}</td>
+        <td>${user.phone || '-'}</td>
+        <td>
+          <select class="role-select" data-index="${index}">
+            <option value="user" ${user.role === "user" ? "selected" : ""}>user</option>
+            <option value="mod" ${user.role === "mod" ? "selected" : ""}>mod</option>
+            <option value="admin" ${user.role === "admin" ? "selected" : ""}>admin</option>
+          </select>
+        </td>
+        <td>${user.activities?.length || 0}</td>
+        <td><button class="save-btn" data-index="${index}">Αποθήκευση</button></td>
+      `;
+      userTable.appendChild(row);
+    });
+
+    document.querySelectorAll(".save-btn").forEach(button => {
+      button.addEventListener("click", () => {
+        const index = parseInt(button.dataset.index);
+        const newRole = document.querySelector(`.role-select[data-index='${index}']`).value;
+        users[index].role = newRole;
+        localStorage.setItem("users", JSON.stringify(users));
+        if (users[index].username === currentUser.username) {
+          localStorage.setItem("currentUser", JSON.stringify(users[index]));
+        }
+        alert("Ο ρόλος ενημερώθηκε σε: " + newRole);
+      });
+    });
+
+    function renderEvents() {
+      const eventList = document.getElementById("event-list");
+      eventList.innerHTML = "";
+      events.forEach((e, i) => {
+        const li = document.createElement("li");
+        li.className = "event-item";
+        const attendees = e.attendees || [];
+        const attendeeList = attendees.map(name =>
+          `<li>${name} <button class='remove-attendee' onclick='removeAttendee(${i}, "${name}")'>✖</button></li>`
+        ).join("");
+        li.innerHTML = `
+          <strong>${e.title}</strong> — ${e.date}, ${e.location}
+          <button onclick="removeEvent(${i})">❌</button><br>
+          <small>${attendees.length} άτομα συμμετέχουν:</small>
+          <ul>${attendeeList}</ul>
+        `;
+        eventList.appendChild(li);
+      });
+      localStorage.setItem("events", JSON.stringify(events));
+    }
+
+    function addEvent(e) {
+      e.preventDefault();
+      const title = document.getElementById("event-title").value.trim();
+      const date = document.getElementById("event-date").value.trim();
+      const location = document.getElementById("event-location").value.trim();
+      events.push({ title, date, location, attendees: [] });
+      renderEvents();
+      e.target.reset();
+    }
+
+    function removeEvent(index) {
+      const deletedEvent = events[index];
+      const deletedActivity = `${deletedEvent.title} (${deletedEvent.date})`;
+
+      events.splice(index, 1);
+      users.forEach(user => {
+        user.activities = user.activities?.filter(a => a !== deletedActivity);
+      });
+      localStorage.setItem("users", JSON.stringify(users));
+      if (currentUser.activities) {
+        currentUser.activities = currentUser.activities.filter(a => a !== deletedActivity);
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+      }
+      renderEvents();
+    }
+
+    function removeAttendee(eventIndex, username) {
+      events[eventIndex].attendees = (events[eventIndex].attendees || []).filter(name => name !== username);
+      renderEvents();
+    }
+
+    renderEvents();
+  </script>
+</body>
+</html>

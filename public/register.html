@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Εγγραφή Εθελοντή</title>
+  <link rel="stylesheet" href="login.css">
+</head>
+<body class="login-body">
+  <p class="back-home">
+    <a href="main.html">← Επιστροφή στην αρχική σελίδα</a>
+  </p>
+  <div class="login-container">
+    <h2>Εγγραφή</h2>
+    <form class="login-form" onsubmit="return handleRegister(event)">
+      <input type="text" name="username" placeholder="Όνομα Χρήστη" required>
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="tel" name="phone" placeholder="Τηλέφωνο (προαιρετικό)">
+      <input type="password" name="password" placeholder="Κωδικός" required>
+      <button type="submit">Εγγραφή</button>
+    </form>
+    <p>Έχετε ήδη λογαριασμό; <a href="login.html">Σύνδεση</a></p>
+  </div>
+
+  <script>
+    function handleRegister(event) {
+      event.preventDefault();
+      const form = event.target;
+      const user = {
+        username: form.username.value.trim(),
+        email: form.email.value.trim(),
+        phone: form.phone.value.trim(),
+        password: form.password.value.trim(),
+        role: "user",
+        activities: [
+          "Καθαρισμός Παραλίας Αλυκής (14/04/2025)",
+          "Αναδάσωση στον Υμηττό (06/04/2025)"
+        ]
+      };
+
+      let users = JSON.parse(localStorage.getItem("users")) || [];
+
+      if (users.some(u => u.username === user.username)) {
+        alert("Το όνομα χρήστη υπάρχει ήδη. Δοκιμάστε άλλο.");
+        return;
+      }
+
+      users.push(user);
+      localStorage.setItem("users", JSON.stringify(users));
+      localStorage.setItem("currentUser", JSON.stringify(user));
+
+      alert("Εγγραφή επιτυχής. Καλωσήρθατε, " + user.username + "!");
+      window.location.href = "profile.html";
+    }
+  </script>
+</body>
+</html>

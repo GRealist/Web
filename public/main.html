@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Εθελοντικός Οργανισμός Νεολέας</title>
+  <link rel="stylesheet" href="main.css">
+</head>
+<body>
+  <header>
+    <h1>Εθελοντικός Οργανισμός Νεολέας</h1>
+    <nav id="main-nav">
+      <a href="main.html">Αρχική</a>
+      <a href="leaderboard.html">Κατάταξη</a>
+      <a href="contact.html">Επικοινωνία</a>
+      <a href="login.html" id="login-link">Σύνδεση</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="about">
+      <h2>Ποιοι είμαστε</h2>
+      <p>Οργανισμός νεολαίας για κοινωνική και περιβαλλοντική δράση σε όλη την Ελλάδα.</p>
+    </section>
+
+    <section id="accomplishments">
+      <h2>Το έργο μας</h2>
+      <p>50+ καθαρισμοί παραλιών, 1000+ δέντρα φυτεμένα, 30+ κοινωνικές δράσεις.</p>
+    </section>
+
+    <section id="events">
+      <h2>Προγραμματισμένες Δραστηριότητες</h2>
+      <ul id="upcoming-events" style="list-style: none; padding: 0;"></ul>
+      <h2 style="margin-top:40px">Ολοκληρωμένες Δραστηριότητες</h2>
+      <ul id="past-events" style="list-style: none; padding: 0;"></ul>
+    </section>
+
+    <section id="volunteer">
+      <h2>Γίνε Εθελοντής</h2>
+      <form class="volunteer-form">
+        <input type="text" name="firstName" placeholder="*Όνομα" required>
+        <input type="text" name="lastName" placeholder="*Επώνυμο" required>
+        <input list="locations" name="location" required placeholder="*Περιοχή">
+        <datalist id="locations">
+          <option value="Αθήνα">
+          <option value="Θεσσαλονίκη">
+          <option value="Πάτρα">
+          <option value="Ηράκλειο">
+          <option value="Λάρισα">
+        </datalist>
+        <input type="tel" name="phone" placeholder="Τηλέφωνο" pattern="^\d{10}$">
+        <input type="email" name="email" placeholder="*Email" required>
+        <button type="submit">Συμμετοχή</button>
+      </form>
+    </section>
+  </main>
+
+  <footer id="contact">
+    <p>Επικοινωνήστε μαζί μας: info@volunteer.gr | © 2025</p>
+  </footer>
+
+  <script>
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const nav = document.getElementById("main-nav");
+
+    if (currentUser) {
+      document.getElementById("login-link")?.remove();
+      document.getElementById("register-link")?.remove();
+
+      const profileLink = document.createElement("a");
+      profileLink.href = "profile.html";
+      profileLink.textContent = "Προφίλ";
+      nav.appendChild(profileLink);
+
+      if (currentUser.role === "admin") {
+        const adminLink = document.createElement("a");
+        adminLink.href = "admin.html";
+        adminLink.textContent = "Διαχειριστής";
+        nav.appendChild(adminLink);
+      }
+
+      const logoutLink = document.createElement("a");
+      logoutLink.href = "#";
+      logoutLink.textContent = "Αποσύνδεση";
+      logoutLink.onclick = () => {
+        localStorage.removeItem("currentUser");
+        window.location.href = "main.html";
+      };
+      nav.appendChild(logoutLink);
+    }
+
+    let events = JSON.parse(localStorage.getItem("events")) || [];
+    const upcomingList = document.getElementById("upcoming-events");
+    const pastList = document.getElementById("past-events");
+
+    function toggleAttendance(index) {
+      const username = currentUser?.username;
+      if (!username) return alert("Πρέπει να συνδεθείτε πρώτα.");
+      const event = events[index];
+      event.attendees = event.attendees || [];
+      const idx = event.attendees.indexOf(username);
+      if (idx > -1) {
+        event.attendees.splice(idx, 1);
+      } else {
+        event.attendees.push(username);
+      }
+      localStorage.setItem("events", JSON.stringify(events));
+      renderEvents();
+    }
+
+    function renderEvents() {
+      const today = new Date().toISOString().split("T")[0];
+      upcomingList.innerHTML = "";
+      pastList.innerHTML = "";
+
+      events.forEach((e, i) => {
+        const isGoing = e.attendees?.includes(currentUser?.username);
+        const li = document.createElement("li");
+        li.innerHTML = `<strong>${e.title}</strong><br>Ημερομηνία: ${e.date}<br>Τοποθεσία: ${e.location}<br>`;
+        li.style.marginBottom = "20px";
+        if (e.date >= today) {
+          const btn = document.createElement("button");
+          btn.textContent = isGoing ? "Δεν συμμετέχω" : "Συμμετέχω";
+          btn.className = isGoing ? "event-attend-btn cancel" : "event-attend-btn";
+          btn.onclick = () => toggleAttendance(i);
+          li.appendChild(btn);
+          upcomingList.appendChild(li);
+        } else {
+          const attended = e.attendees?.length || 0;
+          const lockMsg = document.createElement("p");
+          lockMsg.textContent = `Το event έχει λήξει — ${attended} άτομα συμμετείχαν.`;
+          li.appendChild(lockMsg);
+          pastList.appendChild(li);
+        }
+
+        // Sync participation to profile
+        if (currentUser && isGoing && e.date <= today) {
+          const activity = `${e.title} (${e.date})`;
+          if (!currentUser.activities) currentUser.activities = [];
+          if (!currentUser.activities.includes(activity)) {
+            currentUser.activities.push(activity);
+            let users = JSON.parse(localStorage.getItem("users")) || [];
+            const index = users.findIndex(u => u.username === currentUser.username);
+            if (index !== -1) users[index] = currentUser;
+            localStorage.setItem("users", JSON.stringify(users));
+            localStorage.setItem("currentUser", JSON.stringify(currentUser));
+          }
+        }
+      });
+    }
+
+    renderEvents();
+  </script>
+</body>
+</html>

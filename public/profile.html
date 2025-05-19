@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Προφίλ Εθελοντή</title>
+  <link rel="stylesheet" href="profile.css" />
+</head>
+<body>
+  <header class="profile-header">
+    <h1>Το Προφίλ Μου</h1>
+    <nav id="main-nav">
+      <a href="main.html">Αρχική</a>
+      <a href="leaderboard.html">Κατάταξη</a>
+      <a href="contact.html">Επικοινωνία</a>
+    </nav>
+  </header>
+
+  <main class="profile-container">
+    <section class="profile-info">
+      <h2>Καλωσήρθες, <span id="username-display">Εθελοντής</span>!</h2>
+      <form id="edit-profile-form">
+        <label>Όνομα Χρήστη <input type="text" id="username" required /></label>
+        <label>Email <input type="email" id="email" required /></label>
+        <label>Τηλέφωνο <input type="tel" id="phone" /></label>
+        <label>Αλλαγή Κωδικού <input type="password" id="password" /></label>
+        <button type="submit">Αποθήκευση Αλλαγών</button>
+      </form>
+    </section>
+
+    <section class="profile-activities">
+      <h3>Οι Δράσεις Μου</h3>
+      <ul id="activities-list"></ul>
+    </section>
+
+    <section class="danger-zone">
+      <button onclick="deleteAccount()" class="delete-btn">Διαγραφή Λογαριασμού</button>
+    </section>
+  </main>
+
+  <script>
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+    let events = JSON.parse(localStorage.getItem("events")) || [];
+
+    if (!currentUser) {
+      window.location.href = "login.html";
+    }
+
+    // Dynamic header
+    const nav = document.getElementById("main-nav");
+    const profileLink = document.createElement("a");
+    profileLink.href = "profile.html";
+    profileLink.textContent = "Προφίλ";
+    nav.appendChild(profileLink);
+
+    if (currentUser?.role === "admin") {
+      const adminLink = document.createElement("a");
+      adminLink.href = "admin.html";
+      adminLink.textContent = "Διαχειριστής";
+      nav.appendChild(adminLink);
+    }
+
+    const logoutLink = document.createElement("a");
+    logoutLink.href = "#";
+    logoutLink.textContent = "Αποσύνδεση";
+    logoutLink.onclick = () => {
+      localStorage.removeItem("currentUser");
+      window.location.href = "main.html";
+    };
+    nav.appendChild(logoutLink);
+
+    document.getElementById("username-display").textContent = currentUser.username;
+    document.getElementById("username").value = currentUser.username;
+    document.getElementById("email").value = currentUser.email;
+    document.getElementById("phone").value = currentUser.phone || "";
+
+    // Sync past events to activities
+    const today = new Date().toISOString().split("T")[0];
+    currentUser.activities = currentUser.activities || [];
+
+    let updated = false;
+    events.forEach(event => {
+      if (!event.attendees?.includes(currentUser.username)) return;
+      if (event.date > today) return;
+
+      const activity = `${event.title} (${event.date})`;
+      if (!currentUser.activities.includes(activity)) {
+        currentUser.activities.push(activity);
+        updated = true;
+      }
+    });
+
+    if (updated) {
+      const index = users.findIndex(u => u.username === currentUser.username);
+      if (index !== -1) users[index] = currentUser;
+      localStorage.setItem("users", JSON.stringify(users));
+      localStorage.setItem("currentUser", JSON.stringify(currentUser));
+    }
+
+    const activitiesList = document.getElementById("activities-list");
+    if (currentUser.activities.length === 0) {
+      activitiesList.innerHTML = "<li>Δεν έχετε δηλώσει συμμετοχή σε κάποια δράση ακόμα.</li>";
+    } else {
+      currentUser.activities.forEach(activity => {
+        const li = document.createElement("li");
+        li.textContent = activity;
+        activitiesList.appendChild(li);
+      });
+    }
+
+    document.getElementById("edit-profile-form").addEventListener("submit", e => {
+      e.preventDefault();
+      const updatedUser = {
+        ...currentUser,
+        username: document.getElementById("username").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        password: document.getElementById("password").value.trim() || currentUser.password
+      };
+
+      const index = users.findIndex(u => u.username === currentUser.username);
+      if (index !== -1) {
+        users[index] = updatedUser;
+        localStorage.setItem("users", JSON.stringify(users));
+        localStorage.setItem("currentUser", JSON.stringify(updatedUser));
+        alert("Τα στοιχεία σας ενημερώθηκαν.");
+        location.reload();
+      }
+    });
+
+    function deleteAccount() {
+      if (confirm("Είστε σίγουροι ότι θέλετε να διαγράψετε τον λογαριασμό σας;")) {
+        users = users.filter(u => u.username !== currentUser.username);
+        localStorage.setItem("users", JSON.stringify(users));
+        localStorage.removeItem("currentUser");
+        alert("Ο λογαριασμός σας διαγράφηκε.");
+        window.location.href = "main.html";
+      }
+    }
+  </script>
+</body>
+</html>
