@@ -55,9 +55,9 @@
   <header>
     <h1>Εθελοντικός Οργανισμός Νεολαίας</h1>
     <nav id="main-nav">
-      <a href="main.html">Αρχική</a>
-      <a href="leaderboard.html">Κατάταξη</a>
-      <a href="contact.html">Επικοινωνία</a>
+      <a href="/">Αρχική</a>
+      <a href="/leaderboard">Κατάταξη</a>
+      <a href="/contact">Επικοινωνία</a>
     </nav>
   </header>
 
@@ -104,13 +104,13 @@
 
     if (currentUser) {
       const profileLink = document.createElement("a");
-      profileLink.href = "profile.html";
+      profileLink.href = "/profile";
       profileLink.textContent = "Προφίλ";
       nav.appendChild(profileLink);
 
       if (currentUser.role === "admin") {
         const adminLink = document.createElement("a");
-        adminLink.href = "admin.html";
+        adminLink.href = "/admin";
         adminLink.textContent = "Διαχειριστής";
         nav.appendChild(adminLink);
       }
@@ -120,12 +120,12 @@
       logoutLink.textContent = "Αποσύνδεση";
       logoutLink.onclick = () => {
         localStorage.removeItem("currentUser");
-        window.location.href = "login.html";
+        window.location.href = "/login";
       };
       nav.appendChild(logoutLink);
     } else {
       const loginLink = document.createElement("a");
-      loginLink.href = "login.html";
+      loginLink.href = "/login";
       loginLink.textContent = "Σύνδεση";
       nav.appendChild(loginLink);
     }

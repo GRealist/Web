@@ -28,6 +28,10 @@ app.post('/register', (req, res) => {
   });
 });
 
+app.get('/register', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'register.html'));
+})
+
 // Login
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
@@ -37,6 +41,25 @@ app.post('/login', (req, res) => {
     res.json(row);
   });
 });
+
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+})
+
+// Profile Screen
+app.get('/profile', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'profile.html'));
+})
+
+// Leaderboard
+app.get('/leaderboard', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'leaderboard.html'));
+})
+
+// Contact
+app.get('/contact', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'contact.html'));
+})
 
 // Get all users (admin only - frontend should restrict this)
 app.get('/users', (req, res) => {

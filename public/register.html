@@ -8,7 +8,7 @@
 </head>
 <body class="login-body">
   <p class="back-home">
-    <a href="main.html">← Επιστροφή στην αρχική σελίδα</a>
+    <a href="/">← Επιστροφή στην αρχική σελίδα</a>
   </p>
   <div class="login-container">
     <h2>Εγγραφή</h2>
@@ -19,7 +19,7 @@
       <input type="password" name="password" placeholder="Κωδικός" required>
       <button type="submit">Εγγραφή</button>
     </form>
-    <p>Έχετε ήδη λογαριασμό; <a href="login.html">Σύνδεση</a></p>
+    <p>Έχετε ήδη λογαριασμό; <a href="/login">Σύνδεση</a></p>
   </div>
 
   <script>
@@ -50,7 +50,7 @@
       localStorage.setItem("currentUser", JSON.stringify(user));
 
       alert("Εγγραφή επιτυχής. Καλωσήρθατε, " + user.username + "!");
-      window.location.href = "profile.html";
+      window.location.href = "/profile";
     }
   </script>
 </body>
