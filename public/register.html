@@ -12,7 +12,7 @@
   </p>
   <div class="login-container">
     <h2>Εγγραφή</h2>
-    <form class="login-form" method="post">
+    <form class="login-form" onsubmit="return handleRegister(event)" method="post">
       <input type="text" name="username" placeholder="Όνομα Χρήστη" required>
       <input type="email" name="email" placeholder="Email" required>
       <input type="tel" name="phone" placeholder="Τηλέφωνο (προαιρετικό)">
