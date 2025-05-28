@@ -10,7 +10,7 @@ const db = new sqlite3.Database('./db.sqlite');
 
 
 app.use(cors());
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
@@ -27,6 +27,7 @@ app.post('/register', (req, res) => {
     if (err) return res.status(400).json({ error: err.message });
     res.status(201).json({ id: this.lastID });
   });
+  db.close();
 });
 
 app.get('/register', (req, res) => {
