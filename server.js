@@ -8,6 +8,7 @@ const path = require('path');
 const app = express();
 const db = new sqlite3.Database('./db.sqlite');
 
+
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));

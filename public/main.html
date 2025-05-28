@@ -68,13 +68,13 @@
       document.getElementById("register-link")?.remove();
 
       const profileLink = document.createElement("a");
-      profileLink.href = "profile.html";
+      profileLink.href = "/profile";
       profileLink.textContent = "Προφίλ";
       nav.appendChild(profileLink);
 
       if (currentUser.role === "admin") {
         const adminLink = document.createElement("a");
-        adminLink.href = "admin.html";
+        adminLink.href = "/admin";
         adminLink.textContent = "Διαχειριστής";
         nav.appendChild(adminLink);
       }
@@ -84,7 +84,7 @@
       logoutLink.textContent = "Αποσύνδεση";
       logoutLink.onclick = () => {
         localStorage.removeItem("currentUser");
-        window.location.href = "main.html";
+        window.location.href = "/";
       };
       nav.appendChild(logoutLink);
     }

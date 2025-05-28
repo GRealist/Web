@@ -114,7 +114,7 @@
       logoutLink.textContent = "Αποσύνδεση";
       logoutLink.onclick = () => {
         localStorage.removeItem("currentUser");
-        window.location.href = "main.html";
+        window.location.href = "/";
       };
       nav.appendChild(logoutLink);
     } else {

@@ -62,7 +62,7 @@
 
     if (!currentUser || currentUser.role !== "admin") {
       alert("Πρόσβαση μόνο σε διαχειριστές.");
-      window.location.href = "main.html";
+      window.location.href = "/";
     }
 
     // Add logout to nav
@@ -71,7 +71,7 @@
     logoutLink.textContent = "Αποσύνδεση";
     logoutLink.onclick = () => {
       localStorage.removeItem("currentUser");
-      window.location.href = "login.html";
+      window.location.href = "/login";
     };
     nav.appendChild(logoutLink);
 
